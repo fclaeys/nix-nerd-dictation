@@ -1,5 +1,21 @@
 # nerd-dictation Nix Flake
 
+> **⚠️ WORK IN PROGRESS / TRAVAIL EN COURS**
+> 
+> **🇬🇧 This project is currently a work in progress and only functions under specific conditions:**
+> - ✅ Tested on Linux with Wayland (COSMIC DE)
+> - ✅ Works with PulseAudio/PipeWire audio systems
+> - ⚠️ May require audio system configuration
+> - ⚠️ Microphone permissions needed
+> - 🇫🇷 Currently optimized for French language only
+> 
+> **🇫🇷 Ce projet est actuellement en cours de développement et ne fonctionne que dans certaines conditions :**
+> - ✅ Testé sur Linux avec Wayland (COSMIC DE)
+> - ✅ Fonctionne avec les systèmes audio PulseAudio/PipeWire
+> - ⚠️ Peut nécessiter une configuration du système audio
+> - ⚠️ Permissions microphone requises
+> - 🇫🇷 Actuellement optimisé pour le français uniquement
+
 Ce flake Nix fournit un package et des modules NixOS/Home Manager pour [nerd-dictation](https://github.com/ideasman42/nerd-dictation), un outil de dictée vocale hors ligne.
 
 ## ✅ Installation complètement automatisée
