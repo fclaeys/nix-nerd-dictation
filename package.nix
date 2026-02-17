@@ -69,13 +69,13 @@ in
 
 stdenv.mkDerivation rec {
   pname = "nerd-dictation";
-  version = "unstable-2024-12-19";
+  version = "unstable-2025-10-10";
 
   src = fetchFromGitHub {
     owner = "ideasman42";
     repo = "nerd-dictation";
-    rev = "03ce043a6d569a5bb9a715be6a8e45d8ba0930fd";
-    sha256 = "sha256-M/05SUAe2Fq5I40xuWZ/lTn1+mNLr4Or6o0yKfylVk8=";
+    rev = "41f372789c640e01bb6650339a78312661530843";
+    sha256 = "sha256-xjaHrlJvk8bNvWp1VE4EAHi2VJlAutBxUgWB++3Qo+s=";
   };
 
   nativeBuildInputs = [
