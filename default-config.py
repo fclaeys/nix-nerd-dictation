@@ -40,28 +40,17 @@ def _parse_number_sequence(words):
         word = words[i]
 
         if word == "et":
-            # "et" is only valid inside a number before "un", "une", or "onze"
             i += 1
             continue
 
-        if word in ("vingts", "vingt") and current == 60:
-            # soixante-vingts n'existe pas, mais soixante + vingt = 80?
-            # Non: "soixante" suivi de "vingt" n'est pas standard.
-            # On traite vingt normalement
-            current += 20
-            i += 1
+        # Look-ahead: "quatre" + "vingt(s)" = 80
+        if word == "quatre" and i + 1 < len(words) and words[i + 1] in ("vingt", "vingts"):
+            current += 80
+            i += 2
             continue
 
         if word in _UNITS:
-            val = _UNITS[word]
-            if word == "vingt" and current == 4:
-                # quatre-vingt(s) = 80
-                current = 80
-            elif word == "vingt" and current == 60:
-                # This shouldn't happen with standard French but just in case
-                current = 80
-            else:
-                current += val
+            current += _UNITS[word]
             i += 1
             continue
 
@@ -70,6 +59,12 @@ def _parse_number_sequence(words):
                 current = 100
             else:
                 current *= 100
+            i += 1
+            continue
+
+        if word in ("vingts",):
+            # Standalone "vingts" without preceding "quatre" (shouldn't happen in valid French)
+            current += 20
             i += 1
             continue
 
@@ -89,15 +84,6 @@ def _parse_number_sequence(words):
             else:
                 result += current * mult
                 current = 0
-            i += 1
-            continue
-
-        if word == "vingts":
-            # "quatre-vingts" without following number (standalone 80)
-            if current == 4:
-                current = 80
-            else:
-                current += 20
             i += 1
             continue
 
