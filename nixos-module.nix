@@ -4,9 +4,11 @@ with lib;
 
 let
   cfg = config.services.nerd-dictation;
-  
+
   nerd-dictation = pkgs.callPackage ./package.nix { };
-  
+
+  defaultConfigScript = builtins.readFile ./default-config.py;
+
   configFile = pkgs.writeText "nerd-dictation.py" cfg.configScript;
 in
 
@@ -52,17 +54,8 @@ in
 
     configScript = mkOption {
       type = types.lines;
-      default = "";
-      description = "Python configuration script content";
-      example = ''
-        # Custom nerd-dictation configuration
-        import re
-        
-        def text_replace_function(text):
-            text = text.replace("new line", "\n")
-            text = text.replace("tab", "\t")
-            return text
-      '';
+      default = defaultConfigScript;
+      description = "Python configuration script content. Defaults to built-in French config with number parsing and punctuation.";
     };
 
     extraPackages = mkOption {
@@ -83,11 +76,6 @@ in
       description = "Idle time in milliseconds before stopping recording";
     };
 
-    convertNumbers = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Convert number words to digits";
-    };
   };
 
   config = mkIf cfg.enable {

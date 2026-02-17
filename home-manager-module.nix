@@ -4,10 +4,10 @@ with lib;
 
 let
   cfg = config.programs.nerd-dictation;
-  
+
   nerd-dictation = pkgs.callPackage ./package.nix { };
-  
-  configFile = pkgs.writeText "nerd-dictation.py" cfg.configScript;
+
+  defaultConfigScript = builtins.readFile ./default-config.py;
 in
 
 {
@@ -40,17 +40,8 @@ in
 
     configScript = mkOption {
       type = types.lines;
-      default = "";
-      description = "Python configuration script content";
-      example = ''
-        # Custom nerd-dictation configuration
-        import re
-        
-        def text_replace_function(text):
-            text = text.replace("new line", "\n")
-            text = text.replace("tab", "\t")
-            return text
-      '';
+      default = defaultConfigScript;
+      description = "Python configuration script content. Defaults to built-in French config with number parsing and punctuation.";
     };
 
     timeout = mkOption {
@@ -63,12 +54,6 @@ in
       type = types.int;
       default = 500;
       description = "Idle time in milliseconds before stopping recording";
-    };
-
-    convertNumbers = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Convert number words to digits";
     };
 
     keyBindings = mkOption {
@@ -108,7 +93,7 @@ in
       # VOSK is now included in the package
     ]);
 
-    # Create config directory and file
+    # Deploy config file (managed by home-manager, always up-to-date)
     xdg.configFile."nerd-dictation/nerd-dictation.py" = mkIf (cfg.configScript != "") {
       text = cfg.configScript;
     };
@@ -127,7 +112,7 @@ in
 
       Service = {
         Type = "forking";
-        ExecStart = "${cfg.package}/bin/nerd-dictation begin --timeout=${toString cfg.timeout} --idle-time=${toString cfg.idleTime}${optionalString cfg.convertNumbers " --numbers-as-digits"}";
+        ExecStart = "${cfg.package}/bin/nerd-dictation begin --timeout=${toString cfg.timeout} --idle-time=${toString cfg.idleTime}";
         ExecStop = "${cfg.package}/bin/nerd-dictation end";
         ExecReload = "${cfg.package}/bin/nerd-dictation suspend";
         Restart = "on-failure";
@@ -145,7 +130,7 @@ in
     home.file.".local/bin/nerd-dictation-begin" = {
       text = ''
         #!/bin/sh
-        ${cfg.package}/bin/nerd-dictation begin --timeout=${toString cfg.timeout} --idle-time=${toString cfg.idleTime}${optionalString cfg.convertNumbers " --numbers-as-digits"}
+        ${cfg.package}/bin/nerd-dictation begin --timeout=${toString cfg.timeout} --idle-time=${toString cfg.idleTime}
       '';
       executable = true;
     };

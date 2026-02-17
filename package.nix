@@ -129,18 +129,6 @@ stdenv.mkDerivation rec {
         set -- "\$@" --vosk-model-dir="${vosk-model-fr}/share/vosk-models/vosk-model-small-fr-0.22"
     fi
     
-    # Setup default French configuration if it doesn't exist
-    if [ "\$needs_model" = true ]; then
-        config_dir="\$HOME/.config/nerd-dictation"
-        config_file="\$config_dir/nerd-dictation.py"
-        
-        if [ ! -f "\$config_file" ]; then
-            mkdir -p "\$config_dir"
-            cp $out/share/nerd-dictation/default-config.py "\$config_file"
-            echo "Configuration française installée dans \$config_file"
-        fi
-    fi
-    
     # Auto-detect and set input tool for Wayland
     if [ "\$needs_model" = true ] && [ "\$input_tool_specified" = false ]; then
         if [ -n "\$WAYLAND_DISPLAY" ] || [ "\$XDG_SESSION_TYPE" = "wayland" ]; then
